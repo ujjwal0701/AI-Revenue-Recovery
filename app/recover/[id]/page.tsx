@@ -1,6 +1,14 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useState } from "react";
+
+type RecoveryAttempt = {
+  id: string;
+  aiReasoning: string | null;
+  aiRecommendation: string | null;
+  channel: string;
+  status: string;
+};
 
 type Payment = {
   id: string;
@@ -11,6 +19,7 @@ type Payment = {
     name: string;
     email: string;
   };
+  recoveryAttempts?: RecoveryAttempt[];
 };
 
 declare global {
@@ -259,6 +268,8 @@ export default function RecoveryPage({
     );
   }
 
+  const latestAttempt = payment.recoveryAttempts?.[0];
+
   return (
     <main className="min-h-screen bg-slate-50 px-5 py-12 text-slate-950">
       <div className="mx-auto max-w-md">
@@ -302,6 +313,20 @@ export default function RecoveryPage({
               </span>
             </div>
           </div>
+
+          {latestAttempt?.aiReasoning && (
+            <div className="mt-4 rounded-xl border border-slate-200 bg-slate-50/70 p-3.5 text-xs">
+              <div className="flex items-center justify-between font-semibold text-slate-800">
+                <span className="inline-flex items-center gap-1.5">
+                  <span className="h-2 w-2 rounded-full bg-emerald-500" />
+                  AI Recommended Strategy: {latestAttempt.aiRecommendation || "PAYMENT_LINK"}
+                </span>
+              </div>
+              <p className="mt-1.5 leading-relaxed text-slate-500">
+                {latestAttempt.aiReasoning}
+              </p>
+            </div>
+          )}
 
           {error && (
             <div className="mt-4 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">

@@ -12,6 +12,11 @@ export async function GET(
       where: { id },
       include: {
         customer: true,
+        recoveryAttempts: {
+          orderBy: {
+            attemptedAt: "desc",
+          },
+        },
       },
     });
 
