@@ -1,0 +1,80 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+enum PaymentStatus {
+  PENDING
+  FAILED
+  AUTHORIZED
+  CAPTURED
+  REFUNDED
+}
+
+enum RecoveryStatus {
+  PENDING
+  CONTACTED
+  LINK_CREATED
+  RECOVERED
+  FAILED
+  EXPIRED
+}
+
+enum RecoveryChannel {
+  EMAIL
+  WHATSAPP
+  SMS
+  PAYMENT_LINK
+}
+
+model Customer {
+  id                 String            @id @default(cuid())
+  name               String
+  email              String            @unique
+  phone              String?
+  totalSpent         Float             @default(0)
+  successfulPayments Int               @default(0)
+  createdAt          DateTime          @default(now())
+  updatedAt          DateTime          @updatedAt
+
+  payments           Payment[]
+  recoveryAttempts   RecoveryAttempt[]
+}
+
+model Payment {
+  id                String            @id @default(cuid())
+  razorpayPaymentId String?           @unique
+  customerId        String
+  amount            Float
+  currency          String            @default("INR")
+  status            PaymentStatus
+  failureReason     String?
+  failureCode      String?
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+
+  customer          Customer          @relation(fields: [customerId], references: [id])
+  recoveryAttempts  RecoveryAttempt[]
+}
+
+model RecoveryAttempt {
+  id                String           @id @default(cuid())
+  customerId        String
+  paymentId         String
+  channel           RecoveryChannel
+  status            RecoveryStatus   @default(PENDING)
+  aiReasoning       String?
+  aiRecommendation  String?
+  message           String?
+  paymentLink       String?
+  recoveredAmount   Float            @default(0)
+  attemptedAt       DateTime         @default(now())
+  recoveredAt       DateTime?
+
+  customer          Customer         @relation(fields: [customerId], references: [id])
+  payment           Payment          @relation(fields: [paymentId], references: [id])
+}

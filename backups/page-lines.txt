@@ -1,0 +1,566 @@
+1:"use client";
+2:import { useEffect, useState } from "react";
+3:
+4:const activities = [
+5:  {
+6:    title: "Payment failure detected",
+7:    description: "Rahul Sharma · ₹4,999",
+8:    time: "2 min ago",
+9:    icon: "alert",
+10:  },
+11:  {
+12:    title: "AI recovery strategy selected",
+13:    description: "Recommended payment-link retry",
+14:    time: "2 min ago",
+15:    icon: "sparkle",
+16:  },
+17:  {
+18:    title: "Recovery message generated",
+19:    description: "Personalized message ready",
+20:    time: "1 min ago",
+21:    icon: "message",
+22:  },
+23:  {
+24:    title: "Revenue recovered",
+25:    description: "Amit Verma · ₹9,999",
+26:    time: "18 min ago",
+27:    icon: "check",
+28:  },
+29:];
+30:
+31:function Icon({
+32:  name,
+33:  size = 20,
+34:}: {
+35:  name: string;
+36:  size?: number;
+37:}) {
+38:  const common = {
+39:    width: size,
+40:    height: size,
+41:    viewBox: "0 0 24 24",
+42:    fill: "none",
+43:    stroke: "currentColor",
+44:    strokeWidth: 1.8,
+45:    strokeLinecap: "round" as const,
+46:    strokeLinejoin: "round" as const,
+47:  };
+48:
+49:  if (name === "sparkle") {
+50:    return (
+51:      <svg {...common}>
+52:        <path d="m12 3-1.2 5.8L5 10l5.8 1.2L12 17l1.2-5.8L19 10l-5.8-1.2L12 3Z" />
+53:        <path d="m19 16-.6 2.4L16 19l2.4.6L19 22l.6-2.4L22 19l-2.4-.6L19 16Z" />
+54:      </svg>
+55:    );
+56:  }
+57:
+58:  if (name === "alert") {
+59:    return (
+60:      <svg {...common}>
+61:        <path d="M10.3 3.7 2.4 17.4A1.8 1.8 0 0 0 4 20h16a1.8 1.8 0 0 0 1.6-2.6L13.7 3.7a1.9 1.9 0 0 0-3.4 0Z" />
+62:        <path d="M12 9v4" />
+63:        <path d="M12 17h.01" />
+64:      </svg>
+65:    );
+66:  }
+67:
+68:  if (name === "message") {
+69:    return (
+70:      <svg {...common}>
+71:        <path d="M20 11.5a7.5 7.5 0 0 1-8 7.5 8.3 8.3 0 0 1-3.4-.7L4 20l1.7-4.1A7.2 7.2 0 0 1 4 11.5 7.5 7.5 0 0 1 12 4a7.5 7.5 0 0 1 8 7.5Z" />
+72:        <path d="M8 11h.01M12 11h.01M16 11h.01" />
+73:      </svg>
+74:    );
+75:  }
+76:
+77:  if (name === "check") {
+78:    return (
+79:      <svg {...common}>
+80:        <circle cx="12" cy="12" r="9" />
+81:        <path d="m8 12 2.7 2.7L16.5 9" />
+82:      </svg>
+83:    );
+84:  }
+85:
+86:  if (name === "trend") {
+87:    return (
+88:      <svg {...common}>
+89:        <path d="M4 16 9 11l3 3 7-8" />
+90:        <path d="M15 6h4v4" />
+91:      </svg>
+92:    );
+93:  }
+94:
+95:  if (name === "card") {
+96:    return (
+97:      <svg {...common}>
+98:        <rect x="3" y="5" width="18" height="14" rx="2" />
+99:        <path d="M3 10h18" />
+100:        <path d="M7 15h4" />
+101:      </svg>
+102:    );
+103:  }
+104:
+105:  if (name === "users") {
+106:    return (
+107:      <svg {...common}>
+108:        <path d="M16 20v-1.5a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4V20" />
+109:        <circle cx="9.5" cy="7.5" r="3.5" />
+110:        <path d="M17 11a3.5 3.5 0 0 0 0-7" />
+111:        <path d="M21 20v-1.5a4 4 0 0 0-3-3.8" />
+112:      </svg>
+113:    );
+114:  }
+115:
+116:  if (name === "settings") {
+117:    return (
+118:      <svg {...common}>
+119:        <circle cx="12" cy="12" r="3" />
+120:        <path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-1.8 1.8-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6V20h-2.6v-.1a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1-1.8-1.8.1-.1A1.7 1.7 0 0 0 8 15a1.7 1.7 0 0 0-1.6-1H6v-2.6h.1a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1 1.8-1.8.1.1a1.7 1.7 0 0 0 1.9.3 1.7 1.7 0 0 0 1-1.6V5h2.6v.1a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1 1.8 1.8-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.6 1h.1V14h-.1a1.7 1.7 0 0 0-1.6 1Z" />
+121:      </svg>
+122:    );
+123:  }
+124:
+125:  return null;
+126:}
+127:
+128:function MetricCard({
+129:  title,
+130:  value,
+131:  subtitle,
+132:  icon,
+133:  trend,
+134:}: {
+135:  title: string;
+136:  value: string;
+137:  subtitle: string;
+138:  icon: string;
+139:  trend?: string;
+140:}) {
+141:  return (
+142:    <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+143:      <div className="flex items-start justify-between">
+144:        <div>
+145:          <p className="text-sm font-medium text-slate-500">{title}</p>
+146:          <p className="mt-2 text-3xl font-semibold tracking-tight text-slate-950">
+147:            {value}
+148:          </p>
+149:        </div>
+150:
+151:        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 text-slate-700">
+152:          <Icon name={icon} size={19} />
+153:        </div>
+154:      </div>
+155:
+156:      <div className="mt-4 flex items-center gap-2 text-xs">
+157:        {trend && (
+158:          <span className="flex items-center gap-1 font-semibold text-emerald-600">
+159:            <Icon name="trend" size={13} />
+160:            {trend}
+161:          </span>
+162:        )}
+163:        <span className="text-slate-400">{subtitle}</span>
+164:      </div>
+165:    </div>
+166:  );
+167:}
+168:
+169:export default function Home() {
+170:  const [payments, setPayments] = useState<any[]>([]);
+171:
+172:  useEffect(() => {
+173:    fetch("/api/payments")
+174:      .then((response) => response.json())
+175:      .then((data) => {
+176:        if (data.success) {
+177:          setPayments(data.payments);
+178:        }
+179:      })
+180:      .catch((error) => {
+181:        console.error("Failed to load payments:", error);
+182:      });
+183:  }, []);
+184:    const revenueAtRisk = payments.reduce(
+185:    (total, payment) => total + payment.amount,
+186:    0
+187:  );
+188:
+189:  const failedPaymentCount = payments.length;
+190:
+191:const revenueRecovered = payments.reduce(
+192:  (total, payment) => {
+193:    const recovered = payment.recoveryAttempts.reduce(
+194:      (sum: number, attempt: any) => sum + attempt.recoveredAmount,
+195:      0
+196:    );
+197:
+198:    return total + recovered;
+199:  },
+200:  0
+201:);
+202:
+203:const recoveryRate =
+204:  revenueAtRisk > 0
+205:    ? (revenueRecovered / revenueAtRisk) * 100
+206:    : 0;
+207:    <main className="min-h-screen bg-slate-50 text-slate-950">
+208:      <div className="flex min-h-screen">
+209:        {/* Sidebar */}
+210:        <aside className="hidden w-64 shrink-0 border-r border-slate-200 bg-white lg:flex lg:flex-col">
+211:          <div className="flex h-20 items-center border-b border-slate-100 px-6">
+212:            <div className="flex items-center gap-3">
+213:              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-950 text-white">
+214:                <Icon name="sparkle" size={19} />
+215:              </div>
+216:              <div>
+217:                <p className="text-sm font-bold tracking-tight">RevenueAI</p>
+218:                <p className="text-[11px] text-slate-400">Recovery Engine</p>
+219:              </div>
+220:            </div>
+221:          </div>
+222:
+223:          <nav className="flex-1 space-y-1 p-4">
+224:            <p className="mb-3 px-3 text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400">
+225:              Workspace
+226:            </p>
+227:
+228:            <button className="flex w-full items-center gap-3 rounded-xl bg-slate-950 px-3 py-2.5 text-left text-sm font-medium text-white">
+229:              <Icon name="trend" size={18} />
+230:              Overview
+231:            </button>
+232:
+233:            <button className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm font-medium text-slate-500 hover:bg-slate-50">
+234:              <Icon name="card" size={18} />
+235:              Payments
+236:            </button>
+237:
+238:            <button className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm font-medium text-slate-500 hover:bg-slate-50">
+239:              <Icon name="users" size={18} />
+240:              Customers
+241:            </button>
+242:
+243:            <button className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm font-medium text-slate-500 hover:bg-slate-50">
+244:              <Icon name="sparkle" size={18} />
+245:              AI Agent
+246:            </button>
+247:
+248:            <p className="mb-3 mt-8 px-3 text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400">
+249:              System
+250:            </p>
+251:
+252:            <button className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm font-medium text-slate-500 hover:bg-slate-50">
+253:              <Icon name="settings" size={18} />
+254:              Settings
+255:            </button>
+256:          </nav>
+257:
+258:          <div className="m-4 rounded-2xl bg-slate-950 p-4 text-white">
+259:            <div className="mb-3 flex items-center gap-2">
+260:              <span className="h-2 w-2 rounded-full bg-emerald-400" />
+261:              <span className="text-xs font-medium text-slate-300">
+262:                AI Agent Active
+263:              </span>
+264:            </div>
+265:            <p className="text-sm font-semibold">Recovery engine is running</p>
+266:            <p className="mt-1 text-xs leading-5 text-slate-400">
+267:              Monitoring payment events and identifying recoverable revenue.
+268:            </p>
+269:          </div>
+270:        </aside>
+271:
+272:        {/* Main */}
+273:        <section className="min-w-0 flex-1">
+274:          <header className="flex h-20 items-center justify-between border-b border-slate-200 bg-white px-5 sm:px-8">
+275:            <div>
+276:              <p className="text-xs font-medium text-slate-400">
+277:                Monday, August 24, 2026
+278:              </p>
+279:              <h1 className="mt-0.5 text-xl font-semibold tracking-tight">
+280:                Revenue Overview
+281:              </h1>
+282:            </div>
+283:
+284:            <div className="flex items-center gap-3">
+285:              <div className="hidden items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-2 sm:flex">
+286:                <span className="h-2 w-2 rounded-full bg-emerald-500" />
+287:                <span className="text-xs font-medium text-slate-600">
+288:                  System operational
+289:                </span>
+290:              </div>
+291:
+292:              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-slate-900 text-xs font-bold text-white">
+293:                UR
+294:              </div>
+295:            </div>
+296:          </header>
+297:
+298:          <div className="mx-auto max-w-7xl space-y-6 p-5 sm:p-8">
+299:            {/* Hero */}
+300:            <div className="overflow-hidden rounded-2xl bg-slate-950 p-6 text-white shadow-sm sm:p-8">
+301:              <div className="flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
+302:                <div className="max-w-2xl">
+303:                  <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-medium text-slate-300">
+304:                    <Icon name="sparkle" size={14} />
+305:                    AI-powered revenue recovery
+306:                  </div>
+307:
+308:                  <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">
+309:                    Recover revenue that would otherwise be lost.
+310:                  </h2>
+311:
+312:                  <p className="mt-3 max-w-xl text-sm leading-6 text-slate-400">
+313:                    Your AI agent monitors failed payments, understands the
+314:                    reason behind each failure, and recommends the next best
+315:                    recovery action.
+316:                  </p>
+317:                </div>
+318:
+319:                <div className="rounded-2xl border border-white/10 bg-white/5 p-5 lg:min-w-56">
+320:                  <p className="text-xs text-slate-400">This month</p>
+321:                  <p className="mt-1 text-3xl font-semibold">₹72,400</p>
+322:                  <p className="mt-1 text-xs font-medium text-emerald-400">
+323:                    +18.4% recovered revenue
+324:                  </p>
+325:                </div>
+326:              </div>
+327:            </div>
+328:
+329:            {/* Metrics */}
+330:            <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+331:              <MetricCard
+332:                title="Revenue at risk"
+333:                value={`₹${revenueAtRisk.toLocaleString("en-IN")}`}
+334:                subtitle="Across failed payments"
+335:                icon="alert"
+336:              />
+337:
+338:              <MetricCard
+339:                title="Revenue recovered"
+340:                value={`₹${revenueRecovered.toLocaleString("en-IN")}`}
+341:                subtitle="This month"
+342:                icon="trend"
+343:                trend="+18.4%"
+344:              />
+345:
+346:              <MetricCard
+347:                title="Recovery rate"
+348:                value={`${recoveryRate.toFixed(1)}%`}
+349:                subtitle="Of recoverable revenue"
+350:                icon="sparkle"
+351:                trend="+6.8%"
+352:              />
+353:
+354:              <MetricCard
+355:                title="Failed payments"
+356:                value={failedPaymentCount.toString()}
+357:                subtitle="Requires attention"
+358:                icon="card"
+359:              />
+360:            </div>
+361:
+362:            {/* Main grid */}
+363:            <div className="grid gap-6 xl:grid-cols-[1.5fr_1fr]">
+364:              {/* Payments */}
+365:              <div className="rounded-2xl border border-slate-200 bg-white shadow-sm">
+366:                <div className="flex items-center justify-between border-b border-slate-100 px-5 py-5">
+367:                  <div>
+368:                    <h3 className="font-semibold">Failed payments</h3>
+369:                    <p className="mt-1 text-xs text-slate-400">
+370:                      AI is evaluating these transactions for recovery.
+371:                    </p>
+372:                  </div>
+373:
+374:                  <button className="rounded-lg border border-slate-200 px-3 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-50">
+375:                    View all
+376:                  </button>
+377:                </div>
+378:
+379:                <div className="overflow-x-auto">
+380:                  <table className="w-full min-w-[680px]">
+381:                    <thead>
+382:                      <tr className="border-b border-slate-100 text-left">
+383:                        <th className="px-5 py-3 text-[10px] font-bold uppercase tracking-wider text-slate-400">
+384:                          Customer
+385:                        </th>
+386:                        <th className="px-4 py-3 text-[10px] font-bold uppercase tracking-wider text-slate-400">
+387:                          Amount
+388:                        </th>
+389:                        <th className="px-4 py-3 text-[10px] font-bold uppercase tracking-wider text-slate-400">
+390:                          Failure reason
+391:                        </th>
+392:                        <th className="px-4 py-3 text-[10px] font-bold uppercase tracking-wider text-slate-400">
+393:                          Status
+394:                        </th>
+395:                      </tr>
+396:                    </thead>
+397:
+398:                    <tbody>
+399:                      {payments.map((payment) => (
+400:    <tr
+401:      key={payment.id}
+402:      className="border-b border-slate-50 last:border-0 hover:bg-slate-50/70"
+403:    >
+404:      <td className="px-5 py-4">
+405:        <div className="flex items-center gap-3">
+406:          <div className="flex h-9 w-9 items-center justify-center rounded-full bg-slate-100 text-[11px] font-bold text-slate-600">
+407:            {payment.customer.name
+408:              .split(" ")
+409:              .map((name: string) => name[0])
+410:              .join("")
+411:              .slice(0, 2)}
+412:          </div>
+413:
+414:          <div>
+415:            <p className="text-sm font-semibold text-slate-800">
+416:              {payment.customer.name}
+417:            </p>
+418:
+419:            <p className="text-xs text-slate-400">
+420:              {payment.customer.email}
+421:            </p>
+422:          </div>
+423:        </div>
+424:      </td>
+425:
+426:      <td className="px-4 py-4 text-sm font-semibold">
+427:        ₹{payment.amount.toLocaleString("en-IN")}
+428:      </td>
+429:
+430:      <td className="px-4 py-4 text-sm text-slate-500">
+431:        {payment.failureReason || "Unknown"}
+432:      </td>
+433:
+434:      <td className="px-4 py-4">
+435:        <span className="inline-flex rounded-full bg-red-50 px-2.5 py-1 text-[11px] font-semibold text-red-700">
+436:          {payment.status}
+437:        </span>
+438:      </td>
+439:    </tr>
+440:  ))}
+441:                    </tbody>
+442:                  </table>
+443:                </div>
+444:              </div>
+445:
+446:              {/* AI Activity */}
+447:              <div className="rounded-2xl border border-slate-200 bg-white shadow-sm">
+448:                <div className="border-b border-slate-100 px-5 py-5">
+449:                  <div className="flex items-center gap-2">
+450:                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-950 text-white">
+451:                      <Icon name="sparkle" size={15} />
+452:                    </div>
+453:                    <div>
+454:                      <h3 className="font-semibold">AI recovery activity</h3>
+455:                      <p className="text-xs text-slate-400">
+456:                        Live agent activity
+457:                      </p>
+458:                    </div>
+459:                  </div>
+460:                </div>
+461:
+462:                <div className="p-5">
+463:                  <div className="space-y-5">
+464:                    {activities.map((activity, index) => (
+465:                      <div key={activity.title} className="flex gap-3">
+466:                        <div className="relative">
+467:                          <div className="flex h-9 w-9 items-center justify-center rounded-full bg-slate-100 text-slate-600">
+468:                            <Icon name={activity.icon} size={16} />
+469:                          </div>
+470:
+471:                          {index < activities.length - 1 && (
+472:                            <div className="absolute left-1/2 top-9 h-5 w-px -translate-x-1/2 bg-slate-200" />
+473:                          )}
+474:                        </div>
+475:
+476:                        <div className="min-w-0 flex-1">
+477:                          <div className="flex items-start justify-between gap-2">
+478:                            <p className="text-sm font-semibold text-slate-800">
+479:                              {activity.title}
+480:                            </p>
+481:                            <span className="shrink-0 text-[10px] text-slate-400">
+482:                              {activity.time}
+483:                            </span>
+484:                          </div>
+485:                          <p className="mt-1 text-xs text-slate-400">
+486:                            {activity.description}
+487:                          </p>
+488:                        </div>
+489:                      </div>
+490:                    ))}
+491:                  </div>
+492:
+493:                  <div className="mt-6 rounded-xl bg-slate-50 p-4">
+494:                    <div className="flex items-center justify-between">
+495:                      <span className="text-xs font-medium text-slate-500">
+496:                        Agent success rate
+497:                      </span>
+498:                      <span className="text-sm font-bold text-slate-900">
+499:                        91.6%
+500:                      </span>
+501:                    </div>
+502:
+503:                    <div className="mt-2 h-2 overflow-hidden rounded-full bg-slate-200">
+504:                      <div
+505:                        className="h-full rounded-full bg-slate-900"
+506:                        style={{ width: "91.6%" }}
+507:                      />
+508:                    </div>
+509:
+510:                    <p className="mt-2 text-[10px] text-slate-400">
+511:                      Based on successful recovery actions this month.
+512:                    </p>
+513:                  </div>
+514:                </div>
+515:              </div>
+516:            </div>
+517:
+518:            {/* Recovery funnel */}
+519:            <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+520:              <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
+521:                <div>
+522:                  <h3 className="font-semibold">Recovery funnel</h3>
+523:                  <p className="mt-1 text-xs text-slate-400">
+524:                    How the AI converts failed payments into recovered revenue.
+525:                  </p>
+526:                </div>
+527:
+528:                <span className="text-xs font-medium text-slate-400">
+529:                  Last 30 days
+530:                </span>
+531:              </div>
+532:
+533:              <div className="mt-6 grid gap-3 md:grid-cols-4">
+534:                {[
+535:                  ["124", "Failed payments"],
+536:                  ["87", "Customers contacted"],
+537:                  ["54", "Recovery attempts"],
+538:                  ["31", "Payments recovered"],
+539:                ].map(([value, label], index) => (
+540:                  <div key={label} className="relative">
+541:                    <div className="rounded-xl border border-slate-100 bg-slate-50 p-4">
+542:                      <p className="text-2xl font-semibold">{value}</p>
+543:                      <p className="mt-1 text-xs text-slate-500">{label}</p>
+544:                    </div>
+545:
+546:                    {index < 3 && (
+547:                      <div className="absolute -right-2 top-1/2 z-10 hidden -translate-y-1/2 text-slate-300 md:block">
+548:                        →
+549:                      </div>
+550:                    )}
+551:                  </div>
+552:                ))}
+553:              </div>
+554:            </div>
+555:
+556:            {/* Footer */}
+557:            <div className="flex flex-col justify-between gap-2 border-t border-slate-200 pt-5 text-xs text-slate-400 sm:flex-row">
+558:              <p>RevenueAI · AI Revenue Recovery Engine</p>
+559:              <p>Demo environment · Razorpay integration coming next</p>
+560:            </div>
+561:          </div>
+562:        </section>
+563:      </div>
+564:    </main>
+565:  );
+566:}

@@ -1,0 +1,671 @@
+﻿"use client";
+import { useEffect, useState } from "react";
+
+function Icon({
+  name,
+  size = 20,
+}: {
+  name: string;
+  size?: number;
+}) {
+  const common = {
+    width: size,
+    height: size,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: 1.8,
+    strokeLinecap: "round" as const,
+    strokeLinejoin: "round" as const,
+  };
+
+  if (name === "sparkle") {
+    return (
+      <svg {...common}>
+        <path d="m12 3-1.2 5.8L5 10l5.8 1.2L12 17l1.2-5.8L19 10l-5.8-1.2L12 3Z" />
+        <path d="m19 16-.6 2.4L16 19l2.4.6L19 22l.6-2.4L22 19l-2.4-.6L19 16Z" />
+      </svg>
+    );
+  }
+
+  if (name === "alert") {
+    return (
+      <svg {...common}>
+        <path d="M10.3 3.7 2.4 17.4A1.8 1.8 0 0 0 4 20h16a1.8 1.8 0 0 0 1.6-2.6L13.7 3.7a1.9 1.9 0 0 0-3.4 0Z" />
+        <path d="M12 9v4" />
+        <path d="M12 17h.01" />
+      </svg>
+    );
+  }
+
+  if (name === "message") {
+    return (
+      <svg {...common}>
+        <path d="M20 11.5a7.5 7.5 0 0 1-8 7.5 8.3 8.3 0 0 1-3.4-.7L4 20l1.7-4.1A7.2 7.2 0 0 1 4 11.5 7.5 7.5 0 0 1 12 4a7.5 7.5 0 0 1 8 7.5Z" />
+        <path d="M8 11h.01M12 11h.01M16 11h.01" />
+      </svg>
+    );
+  }
+
+  if (name === "check") {
+    return (
+      <svg {...common}>
+        <circle cx="12" cy="12" r="9" />
+        <path d="m8 12 2.7 2.7L16.5 9" />
+      </svg>
+    );
+  }
+
+  if (name === "trend") {
+    return (
+      <svg {...common}>
+        <path d="M4 16 9 11l3 3 7-8" />
+        <path d="M15 6h4v4" />
+      </svg>
+    );
+  }
+
+  if (name === "card") {
+    return (
+      <svg {...common}>
+        <rect x="3" y="5" width="18" height="14" rx="2" />
+        <path d="M3 10h18" />
+        <path d="M7 15h4" />
+      </svg>
+    );
+  }
+
+  if (name === "users") {
+    return (
+      <svg {...common}>
+        <path d="M16 20v-1.5a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4V20" />
+        <circle cx="9.5" cy="7.5" r="3.5" />
+        <path d="M17 11a3.5 3.5 0 0 0 0-7" />
+        <path d="M21 20v-1.5a4 4 0 0 0-3-3.8" />
+      </svg>
+    );
+  }
+
+  if (name === "settings") {
+    return (
+      <svg {...common}>
+        <circle cx="12" cy="12" r="3" />
+        <path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-1.8 1.8-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6V20h-2.6v-.1a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1-1.8-1.8.1-.1A1.7 1.7 0 0 0 8 15a1.7 1.7 0 0 0-1.6-1H6v-2.6h.1a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1 1.8-1.8.1.1a1.7 1.7 0 0 0 1.9.3 1.7 1.7 0 0 0 1-1.6V5h2.6v.1a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1 1.8 1.8-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.6 1h.1V14h-.1a1.7 1.7 0 0 0-1.6 1Z" />
+      </svg>
+    );
+  }
+
+  return null;
+}
+
+function MetricCard({
+  title,
+  value,
+  subtitle,
+  icon,
+  trend,
+}: {
+  title: string;
+  value: string;
+  subtitle: string;
+  icon: string;
+  trend?: string;
+}) {
+  return (
+    <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+      <div className="flex items-start justify-between">
+        <div>
+          <p className="text-sm font-medium text-slate-500">{title}</p>
+          <p className="mt-2 text-3xl font-semibold tracking-tight text-slate-950">
+            {value}
+          </p>
+        </div>
+
+        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 text-slate-700">
+          <Icon name={icon} size={19} />
+        </div>
+      </div>
+
+      <div className="mt-4 flex items-center gap-2 text-xs">
+        {trend && (
+          <span className="flex items-center gap-1 font-semibold text-emerald-600">
+            <Icon name="trend" size={13} />
+            {trend}
+          </span>
+        )}
+        <span className="text-slate-400">{subtitle}</span>
+      </div>
+    </div>
+  );
+}
+
+export default function Home() {
+  const [payments, setPayments] = useState<any[]>([]);
+
+  useEffect(() => {
+    fetch("/api/payments")
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          setPayments(data.payments);
+        }
+      })
+      .catch((error) => {
+        console.error("Failed to load payments:", error);
+      });
+  }, []);
+      const revenueRecovered = payments.reduce(
+  (total, payment) => {
+    const recovered = payment.recoveryAttempts.reduce(
+      (sum: number, attempt: any) =>
+        sum + (attempt.recoveredAmount || 0),
+      0
+    );
+
+    return total + recovered;
+  },
+  0
+);
+
+const revenueAtRisk = payments.reduce(
+  (total, payment) => {
+    const recovered = payment.recoveryAttempts.reduce(
+      (sum: number, attempt: any) =>
+        sum + (attempt.recoveredAmount || 0),
+      0
+    );
+
+    return total + Math.max(payment.amount - recovered, 0);
+  },
+  0
+);
+
+const failedPaymentCount = payments.filter(
+  (payment) => payment.status === "FAILED"
+).length;
+
+const recoveryRate =
+  revenueAtRisk + revenueRecovered > 0
+    ? (revenueRecovered /
+        (revenueAtRisk + revenueRecovered)) *
+      100
+    : 0; 
+const totalRecoveryAttempts = payments.reduce(
+  (total, payment) => total + payment.recoveryAttempts.length,
+  0
+);
+
+const successfulRecoveryAttempts = payments.reduce(
+  (total, payment) =>
+    total +
+    payment.recoveryAttempts.filter(
+      (attempt: any) => attempt.status === "RECOVERED"
+    ).length,
+  0
+);
+
+const agentSuccessRate =
+  totalRecoveryAttempts > 0
+    ? (successfulRecoveryAttempts / totalRecoveryAttempts) * 100
+    : 0;
+ return(
+    <main className="min-h-screen bg-slate-50 text-slate-950">
+      <div className="flex min-h-screen">
+        {/* Sidebar */}
+        <aside className="hidden w-64 shrink-0 border-r border-slate-200 bg-white lg:flex lg:flex-col">
+          <div className="flex h-20 items-center border-b border-slate-100 px-6">
+            <div className="flex items-center gap-3">
+              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-950 text-white">
+                <Icon name="sparkle" size={19} />
+              </div>
+              <div>
+                <p className="text-sm font-bold tracking-tight">RevenueAI</p>
+                <p className="text-[11px] text-slate-400">Recovery Engine</p>
+              </div>
+            </div>
+          </div>
+
+          <nav className="flex-1 space-y-1 p-4">
+            <p className="mb-3 px-3 text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400">
+              Workspace
+            </p>
+
+            <button className="flex w-full items-center gap-3 rounded-xl bg-slate-950 px-3 py-2.5 text-left text-sm font-medium text-white">
+              <Icon name="trend" size={18} />
+              Overview
+            </button>
+
+            <button className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm font-medium text-slate-500 hover:bg-slate-50">
+              <Icon name="card" size={18} />
+              Payments
+            </button>
+
+            <button className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm font-medium text-slate-500 hover:bg-slate-50">
+              <Icon name="users" size={18} />
+              Customers
+            </button>
+
+            <button className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm font-medium text-slate-500 hover:bg-slate-50">
+              <Icon name="sparkle" size={18} />
+              AI Agent
+            </button>
+
+            <p className="mb-3 mt-8 px-3 text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400">
+              System
+            </p>
+
+            <button className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm font-medium text-slate-500 hover:bg-slate-50">
+              <Icon name="settings" size={18} />
+              Settings
+            </button>
+          </nav>
+
+          <div className="m-4 rounded-2xl bg-slate-950 p-4 text-white">
+            <div className="mb-3 flex items-center gap-2">
+              <span className="h-2 w-2 rounded-full bg-emerald-400" />
+              <span className="text-xs font-medium text-slate-300">
+                AI Agent Active
+              </span>
+            </div>
+            <p className="text-sm font-semibold">Recovery engine is running</p>
+            <p className="mt-1 text-xs leading-5 text-slate-400">
+              Monitoring payment events and identifying recoverable revenue.
+            </p>
+          </div>
+        </aside>
+
+        {/* Main */}
+        <section className="min-w-0 flex-1">
+          <header className="flex h-20 items-center justify-between border-b border-slate-200 bg-white px-5 sm:px-8">
+            <div>
+              <p className="text-xs font-medium text-slate-400">
+                Monday, August 24, 2026
+              </p>
+              <h1 className="mt-0.5 text-xl font-semibold tracking-tight">
+                Revenue Overview
+              </h1>
+            </div>
+
+            <div className="flex items-center gap-3">
+              <div className="hidden items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-2 sm:flex">
+                <span className="h-2 w-2 rounded-full bg-emerald-500" />
+                <span className="text-xs font-medium text-slate-600">
+                  System operational
+                </span>
+              </div>
+
+              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-slate-900 text-xs font-bold text-white">
+                UR
+              </div>
+            </div>
+          </header>
+
+          <div className="mx-auto max-w-7xl space-y-6 p-5 sm:p-8">
+            {/* Hero */}
+            <div className="overflow-hidden rounded-2xl bg-slate-950 p-6 text-white shadow-sm sm:p-8">
+              <div className="flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
+                <div className="max-w-2xl">
+                  <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-medium text-slate-300">
+                    <Icon name="sparkle" size={14} />
+                    AI-powered revenue recovery
+                  </div>
+
+                  <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">
+                    Recover revenue that would otherwise be lost.
+                  </h2>
+
+                  <p className="mt-3 max-w-xl text-sm leading-6 text-slate-400">
+                    Your AI agent monitors failed payments, understands the
+                    reason behind each failure, and recommends the next best
+                    recovery action.
+                  </p>
+                </div>
+
+                <div className="rounded-2xl border border-white/10 bg-white/5 p-5 lg:min-w-56">
+
+                  <p className="mt-1 text-3xl font-semibold">
+  â‚¹{revenueRecovered.toLocaleString("en-IN")}
+</p>
+
+<p className="mt-1 text-xs font-medium text-emerald-400">
+  Revenue recovered this month
+</p>
+
+
+                </div>
+              </div>
+            </div>
+
+            {/* Metrics */}
+            <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+              <MetricCard
+                title="Revenue at risk"
+                value={`â‚¹${revenueAtRisk.toLocaleString("en-IN")}`}
+                subtitle="Across failed payments"
+                icon="alert"
+              />
+
+              <MetricCard
+                title="Revenue recovered"
+                value={`â‚¹${revenueRecovered.toLocaleString("en-IN")}`}
+                subtitle="Recovered from failed payments"
+                icon="trend"
+              />
+
+              <MetricCard
+                title="Recovery rate"
+                value={`${recoveryRate.toFixed(1)}%`}
+                subtitle="Of total recovery opportunity"                
+		icon="sparkle"
+              />
+
+              <MetricCard
+                title="Failed payments"
+                value={failedPaymentCount.toString()}
+                subtitle="Requires attention"
+                icon="card"
+              />
+            </div>
+
+            {/* Main grid */}
+            <div className="grid gap-6 xl:grid-cols-[1.5fr_1fr]">
+              {/* Payments */}
+              <div className="rounded-2xl border border-slate-200 bg-white shadow-sm">
+                <div className="flex items-center justify-between border-b border-slate-100 px-5 py-5">
+                  <div>
+                    <h3 className="font-semibold">Failed payments</h3>
+                    <p className="mt-1 text-xs text-slate-400">
+                      AI is evaluating these transactions for recovery.
+                    </p>
+                  </div>
+
+                  <button className="rounded-lg border border-slate-200 px-3 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-50">
+                    View all
+                  </button>
+                </div>
+
+                <div className="overflow-x-auto">
+                  <table className="w-full min-w-[680px]">
+                    <thead>
+  <tr className="border-b border-slate-100 text-left">
+    <th className="px-5 py-3 text-[10px] font-bold uppercase tracking-wider text-slate-400">
+      Customer
+    </th>
+    <th className="px-4 py-3 text-[10px] font-bold uppercase tracking-wider text-slate-400">
+      Amount
+    </th>
+    <th className="px-4 py-3 text-[10px] font-bold uppercase tracking-wider text-slate-400">
+      Failure reason
+    </th>
+    <th className="px-4 py-3 text-[10px] font-bold uppercase tracking-wider text-slate-400">
+      Status
+    </th>
+    <th className="px-4 py-3 text-[10px] font-bold uppercase tracking-wider text-slate-400">
+      Action
+    </th>
+  </tr>
+</thead>
+                    <tbody>
+                      {payments.map((payment) => (
+    <tr
+      key={payment.id}
+      className="border-b border-slate-50 last:border-0 hover:bg-slate-50/70"
+    >
+      <td className="px-5 py-4">
+        <div className="flex items-center gap-3">
+          <div className="flex h-9 w-9 items-center justify-center rounded-full bg-slate-100 text-[11px] font-bold text-slate-600">
+            {payment.customer.name
+              .split(" ")
+              .map((name: string) => name[0])
+              .join("")
+              .slice(0, 2)}
+          </div>
+
+          <div>
+            <p className="text-sm font-semibold text-slate-800">
+              {payment.customer.name}
+            </p>
+
+            <p className="text-xs text-slate-400">
+              {payment.customer.email}
+            </p>
+          </div>
+        </div>
+      </td>
+
+      <td className="px-4 py-4 text-sm font-semibold">
+        â‚¹{payment.amount.toLocaleString("en-IN")}
+      </td>
+
+      <td className="px-4 py-4 text-sm text-slate-500">
+        {payment.failureReason || "Unknown"}
+      </td>
+
+	<td className="px-4 py-4">
+  <span className="inline-flex rounded-full bg-red-50 px-2.5 py-1 text-[11px] font-semibold text-red-700">
+    {payment.status}
+  </span>
+</td>
+	<td className="px-4 py-4">
+  {payment.recoveryAttempts?.some(
+    (attempt: any) => attempt.status === "RECOVERED"
+  ) ? (
+    <span className="inline-flex rounded-lg bg-emerald-50 px-3 py-2 text-xs font-semibold text-emerald-700">
+      Recovered
+    </span>
+  ) : (
+    <button
+      onClick={async () => {
+        try {
+          const response = await fetch("/api/recover", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              paymentId: payment.id,
+            }),
+          });
+
+          const data = await response.json();
+
+          if (response.ok && data.success) {
+            alert(`Recovery attempt created for ${payment.customer.name}`);
+          } else {
+            alert(data.error || "Recovery failed");
+          }
+        } catch (error) {
+          console.error("Recovery request failed:", error);
+          alert("Recovery request failed");
+        }
+      }}
+      className="rounded-lg bg-slate-950 px-3 py-2 text-xs font-semibold text-white hover:bg-slate-800"
+    >
+      Recover
+    </button>
+  )}
+</td>
+    </tr>
+  ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              {/* AI Activity */}
+              <div className="rounded-2xl border border-slate-200 bg-white shadow-sm">
+                <div className="border-b border-slate-100 px-5 py-5">
+                  <div className="flex items-center gap-2">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-950 text-white">
+                      <Icon name="sparkle" size={15} />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold">AI recovery activity</h3>
+                      <p className="text-xs text-slate-400">
+                        Live agent activity
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="p-5">
+                  <div className="space-y-5">
+  {payments.slice(0, 4).map((payment, index) => {
+    const latestAttempt = payment.recoveryAttempts?.[0];
+
+    const isRecovered =
+      payment.recoveryAttempts?.some(
+        (attempt: any) => attempt.status === "RECOVERED"
+      ) ?? false;
+
+    return (
+      <div
+        key={payment.id}
+        className="flex gap-3"
+      >
+        <div className="relative">
+          <div className="flex h-9 w-9 items-center justify-center rounded-full bg-slate-100 text-slate-600">
+            <Icon
+              name={isRecovered ? "check" : "alert"}
+              size={16}
+            />
+          </div>
+
+          {index < Math.min(payments.length, 4) - 1 && (
+            <div className="absolute left-1/2 top-9 h-5 w-px -translate-x-1/2 bg-slate-200" />
+          )}
+        </div>
+
+        <div className="min-w-0 flex-1">
+          <div className="flex items-start justify-between gap-2">
+            <p className="text-sm font-semibold text-slate-800">
+              {isRecovered
+                ? "Revenue recovered"
+                : latestAttempt
+                ? "AI recovery strategy selected"
+                : "Payment failure detected"}
+            </p>
+
+            <span className="shrink-0 text-[10px] text-slate-400">
+              {new Date(payment.createdAt).toLocaleDateString("en-IN")}
+            </span>
+          </div>
+
+          <p className="mt-1 text-xs text-slate-400">
+            {payment.customer?.name} Â· â‚¹
+            {payment.amount.toLocaleString("en-IN")}
+          </p>
+        </div>
+      </div>
+    );
+  })}
+
+  {payments.length === 0 && (
+    <p className="text-sm text-slate-400">
+      No payment activity yet.
+    </p>
+  )}
+</div>
+                  <div className="mt-6 rounded-xl bg-slate-50 p-4">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-medium text-slate-500">
+                        Agent success rate
+                      </span>
+                      <span className="text-sm font-bold text-slate-900">
+                        {agentSuccessRate.toFixed(1)}%
+                      </span>
+                    </div>
+
+                    <div className="mt-2 h-2 overflow-hidden rounded-full bg-slate-200">
+                      <div
+                        className="h-full rounded-full bg-slate-900"
+                        style={{ width: `${agentSuccessRate}%` }}
+                      />
+                    </div>
+
+                    <p className="mt-2 text-[10px] text-slate-400">
+                      Based on successful recovery actions this month.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Recovery funnel */}
+            <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+              <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
+                <div>
+                  <h3 className="font-semibold">Recovery funnel</h3>
+                  <p className="mt-1 text-xs text-slate-400">
+                    How the AI converts failed payments into recovered revenue.
+                  </p>
+                </div>
+
+                <span className="text-xs font-medium text-slate-400">
+                  Last 30 days
+                </span>
+              </div>
+<div className="mt-6 grid gap-3 md:grid-cols-4">
+  {[
+    [failedPaymentCount.toString(), "Failed payments"],
+    [
+      new Set(
+        payments
+          .filter(
+            (payment) =>
+              payment.recoveryAttempts &&
+              payment.recoveryAttempts.length > 0
+          )
+          .map((payment) => payment.customerId)
+      ).size.toString(),
+      "Customers contacted",
+    ],
+    [
+      payments
+        .reduce(
+          (total, payment) =>
+            total + (payment.recoveryAttempts?.length || 0),
+          0
+        )
+        .toString(),
+      "Recovery attempts",
+    ],
+    [
+      payments
+        .reduce(
+          (total, payment) =>
+            total +
+            (payment.recoveryAttempts?.filter(
+              (attempt: any) => attempt.status === "RECOVERED"
+            ).length || 0),
+          0
+        )
+        .toString(),
+      "Payments recovered",
+    ],
+  ].map(([value, label], index) => (
+    <div key={label} className="relative">
+      <div className="rounded-xl border border-slate-100 bg-slate-50 p-4">
+        <p className="text-2xl font-semibold">{value}</p>
+        <p className="mt-1 text-xs text-slate-500">{label}</p>
+      </div>
+
+      {index < 3 && (
+        <div className="absolute -right-2 top-1/2 z-10 hidden -translate-y-1/2 text-slate-300 md:block">
+          â†’
+        </div>
+      )}
+    </div>
+  ))}
+</div>
+                        {/* Footer */}
+            <div className="flex flex-col justify-between gap-2 border-t border-slate-200 pt-5 text-xs text-slate-400 sm:flex-row">
+              <p>RevenueAI Â· AI Revenue Recovery Engine</p>
+              <p>Demo environment Â· Razorpay Test Mode</p>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+  );
+}
