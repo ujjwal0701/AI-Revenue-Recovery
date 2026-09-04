@@ -1,6 +1,14 @@
+/**
+ * Database Auto-Seeding & Persona Generation Helper
+ * 
+ * Automatically populates a pristine SQLite database with 160 realistic customer profiles,
+ * diverse historical spending tiers, and authentic payment failure profiles matching
+ * real-world Indian e-commerce / SaaS transaction scenarios.
+ */
 import { prisma } from "@/app/lib/prisma";
 
 const firstNames = [
+
   "Aarav", "Vivaan", "Aditya", "Vihaan", "Arjun", "Sai", "Reyansh", "Ayaan",
   "Krishna", "Ishaan", "Shaurya", "Atharva", "Dhruv", "Kabir", "Rudra", "Om",
   "Aaditya", "Advik", "Devansh", "Parth", "Aryan", "Ananya", "Diya", "Saanvi",
