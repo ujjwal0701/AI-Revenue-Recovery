@@ -388,7 +388,11 @@ export function generatePaymentSuccessEmailHtml(payload: NotificationPayload): s
 }
 
 /**
- * Builds 160-char SMS copy for Payment Success
+ * Formats a high-conversion, concise SMS text compliant with telecom 160-character limits
+ * for instant customer payment confirmation.
+ *
+ * @param payload Notification context containing customer name, amount, and payment reference
+ * @returns Plain-text SMS message string
  */
 export function generatePaymentSuccessSmsText(payload: NotificationPayload): string {
   const { recipientName, amount, currency, razorpayPaymentId } = payload;
@@ -398,9 +402,14 @@ export function generatePaymentSuccessSmsText(payload: NotificationPayload): str
 }
 
 /**
- * Builds WhatsApp formatted message copy for Payment Success
+ * Formats a rich WhatsApp text notification using WhatsApp native markdown syntax
+ * (*bold*, _italic_) and payment receipt bullets.
+ *
+ * @param payload Notification context containing customer details and payment confirmation
+ * @returns WhatsApp-formatted markdown text
  */
 export function generatePaymentSuccessWhatsAppText(payload: NotificationPayload): string {
+
   const { recipientName, amount, currency, razorpayPaymentId, paidAt } = payload;
   const formattedDate = paidAt ? new Date(paidAt).toLocaleDateString("en-IN") : "Today";
   return `✅ *Payment Confirmed - RevenueAI Receipt*
