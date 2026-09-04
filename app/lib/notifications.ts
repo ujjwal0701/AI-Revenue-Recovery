@@ -53,14 +53,23 @@ export interface SandboxEmail {
 }
 
 /**
- * Global sandbox store to persist captured emails across Next.js dev server hot-reloads
+ * Global sandbox store to persist captured emails across Next.js dev server hot-reloads.
+ * This simulates an SMTP interceptor / mailtrap environment for developers to inspect
+ * transactional recovery templates without sending real external emails.
  */
 declare global {
   // eslint-disable-next-line no-var
   var __revenueai_email_sandbox: SandboxEmail[] | undefined;
 }
 
+/**
+ * Initializes the in-memory circular buffer for captured sandbox emails.
+ * Pre-populates sample transactional emails if the buffer is empty.
+ *
+ * @returns Mutable array of captured SandboxEmail objects
+ */
 function initSandboxStore(): SandboxEmail[] {
+
   if (!globalThis.__revenueai_email_sandbox) {
     const initialEmails: SandboxEmail[] = [
       {
