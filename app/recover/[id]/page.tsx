@@ -14,6 +14,8 @@ type Payment = {
   id: string;
   amount: number;
   currency: string;
+  status?: string;
+  razorpayPaymentId?: string | null;
   failureReason: string | null;
   customer: {
     name: string;
@@ -248,7 +250,13 @@ export default function RecoveryPage({
     );
   }
 
-  if (paid) {
+  const isPaymentAlreadySettled =
+    paid ||
+    payment.status === "CAPTURED" ||
+    payment.status === "AUTHORIZED" ||
+    payment.recoveryAttempts?.some((attempt) => attempt.status === "RECOVERED");
+
+  if (isPaymentAlreadySettled) {
     return (
       <main className="flex min-h-screen items-center justify-center bg-slate-50 p-6">
         <div className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-8 text-center shadow-sm">
@@ -257,22 +265,49 @@ export default function RecoveryPage({
           </div>
 
           <h1 className="mt-5 text-2xl font-semibold text-slate-950">
-            Payment Successful!
+            {paid ? "Payment Successful!" : "Payment Already Recovered"}
           </h1>
 
           <p className="mt-2 text-sm leading-6 text-slate-500">
-            Your payment of <strong className="text-slate-900">INR {payment.amount.toLocaleString("en-IN")}</strong> has been successfully recovered and captured.
+            {paid ? (
+              <>
+                Your payment of{" "}
+                <strong className="text-slate-900">
+                  INR {payment.amount.toLocaleString("en-IN")}
+                </strong>{" "}
+                has been successfully recovered and captured.
+              </>
+            ) : (
+              <>
+                This transaction of{" "}
+                <strong className="text-slate-900">
+                  INR {payment.amount.toLocaleString("en-IN")}
+                </strong>{" "}
+                for <strong>{payment.customer?.name}</strong> has already been
+                successfully recovered and captured. No further payment is required.
+              </>
+            )}
           </p>
 
           <div className="mt-5 rounded-xl border border-emerald-100 bg-emerald-50/60 p-3.5 text-left text-xs space-y-1.5">
             <div className="flex items-center gap-2 text-emerald-900 font-semibold">
-              <span>📩 Notifications Dispatched:</span>
+              <span>💳 Transaction Status:</span>
             </div>
             <p className="text-emerald-700">
-              • <strong>Receipt Email</strong> sent to <span className="font-mono">{payment.customer.email}</span>
+              • <strong>Status:</strong>{" "}
+              <span className="font-semibold text-emerald-800">
+                CAPTURED / RECOVERED
+              </span>
             </p>
+            {payment.razorpayPaymentId && (
+              <p className="text-emerald-700">
+                • <strong>Payment ID:</strong>{" "}
+                <span className="font-mono">{payment.razorpayPaymentId}</span>
+              </p>
+            )}
             <p className="text-emerald-700">
-              • <strong>Confirmation SMS</strong> sent to customer phone
+              • <strong>Customer:</strong> {payment.customer?.name} (
+              {payment.customer?.email})
             </p>
           </div>
 
