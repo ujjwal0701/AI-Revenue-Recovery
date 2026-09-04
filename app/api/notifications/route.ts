@@ -35,8 +35,11 @@ export async function GET() {
         currency: attempt.payment.currency,
         failureReason: attempt.payment.failureReason,
         paymentLink:
-          attempt.paymentLink ||
-          `http://localhost:3000/recover/${attempt.paymentId}`,
+          attempt.paymentLink
+            ? (attempt.paymentLink.startsWith("http://localhost:3000/")
+                ? attempt.paymentLink.replace("http://localhost:3000", "")
+                : attempt.paymentLink)
+            : `/recover/${attempt.paymentId}`,
         paymentId: attempt.paymentId,
         razorpayPaymentId: attempt.payment.razorpayPaymentId,
         customMessage: attempt.message || undefined,
@@ -96,7 +99,7 @@ export async function POST(request: Request) {
       amount = 4999,
       currency = "INR",
       failureReason = "Card declined by issuing bank",
-      paymentLink = "http://localhost:3000/recover/demo",
+      paymentLink = "/recover/demo",
       razorpayPaymentId = "pay_test_verified99",
       customMessage,
     } = body;

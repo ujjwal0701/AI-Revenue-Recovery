@@ -33,7 +33,7 @@ export async function POST(request: Request) {
       amount = 7499,
       currency = "INR",
       failureReason = "Card declined by issuing bank",
-      paymentLink = "http://localhost:3000/recover/demo",
+      paymentLink = "/recover/demo",
       razorpayPaymentId = "pay_test_sbx99",
     } = body;
 

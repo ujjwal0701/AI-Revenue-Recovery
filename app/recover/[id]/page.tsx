@@ -234,6 +234,42 @@ export default function RecoveryPage({
     }
   };
 
+  const handleSimulatedPayment = async () => {
+    if (!payment) return;
+    setPaying(true);
+    setError("");
+
+    try {
+      const simPaymentId = "pay_test_" + Math.random().toString(36).substring(2, 10);
+      const simOrderId = "order_sim_" + Math.random().toString(36).substring(2, 10);
+
+      const completeResponse = await fetch("/api/recover/complete", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          paymentId: payment.id,
+          razorpayOrderId: simOrderId,
+          razorpayPaymentId: simPaymentId,
+          razorpaySignature: "simulated_demo_signature",
+          isSimulation: true,
+        }),
+      });
+
+      const completeData = await completeResponse.json();
+
+      if (completeResponse.ok && completeData.success) {
+        setPaid(true);
+      } else {
+        setError(completeData.error || "Payment simulation failed");
+      }
+    } catch (err) {
+      console.error("Simulation error:", err);
+      setError("Unable to process simulated payment");
+    } finally {
+      setPaying(false);
+    }
+  };
+
   if (loading) {
     return (
       <main className="flex min-h-screen items-center justify-center bg-slate-50">
@@ -256,6 +292,13 @@ export default function RecoveryPage({
             {error ||
               "This recovery link may be invalid or expired."}
           </p>
+
+          <button
+            onClick={() => (window.location.href = "/")}
+            className="mt-6 w-full rounded-xl bg-slate-950 px-4 py-2.5 text-xs font-semibold text-white hover:bg-slate-800"
+          >
+            Return to Dashboard
+          </button>
         </div>
       </main>
     );
@@ -339,7 +382,7 @@ export default function RecoveryPage({
     <main className="min-h-screen bg-slate-50 px-5 py-12 text-slate-950">
       <div className="mx-auto max-w-md">
         <div className="mb-6 text-center">
-          <div className="mx-auto flex h-11 w-11 items-center justify-center rounded-xl bg-slate-950 text-white">
+          <div className="mx-auto flex h-11 w-11 items-center justify-center rounded-xl bg-slate-950 text-white font-bold text-sm tracking-tight">
             AI
           </div>
 
@@ -363,20 +406,26 @@ export default function RecoveryPage({
 
           <p className="mt-2 text-sm leading-6 text-slate-500">
             Your previous payment could not be completed.
-            You can securely retry it using the button below.
+            You can securely retry it using the options below.
           </p>
 
-          <div className="mt-6 rounded-xl bg-slate-50 p-4">
+          <div className="mt-6 rounded-xl bg-slate-50 p-4 border border-slate-100">
             <div className="flex items-center justify-between">
               <span className="text-sm text-slate-500">
-                Amount
+                Amount Due
               </span>
 
-              <span className="text-xl font-semibold">
+              <span className="text-xl font-bold text-slate-900">
                 INR{" "}
                 {payment.amount.toLocaleString("en-IN")}
               </span>
             </div>
+            {payment.failureReason && (
+              <div className="mt-2 pt-2 border-t border-slate-200/60 flex items-center justify-between text-xs text-slate-500">
+                <span>Failure Reason:</span>
+                <span className="text-red-600 font-medium">{payment.failureReason}</span>
+              </div>
+            )}
           </div>
 
           {latestAttempt?.aiReasoning && (
@@ -394,7 +443,7 @@ export default function RecoveryPage({
           )}
 
           {error && (
-            <div className="mt-4 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">
+            <div className="mt-4 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700 border border-red-200">
               {error}
             </div>
           )}
@@ -402,16 +451,33 @@ export default function RecoveryPage({
           <button
             onClick={handlePayment}
             disabled={paying}
-            className="mt-6 w-full rounded-xl bg-slate-950 px-4 py-3 text-sm font-semibold text-white hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60"
+            className="mt-6 w-full rounded-xl bg-slate-950 px-4 py-3 text-sm font-semibold text-white hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60 transition-colors shadow-sm"
           >
             {paying
-              ? "Processing..."
+              ? "Opening Razorpay..."
               : "Pay INR " +
-                payment.amount.toLocaleString("en-IN")}
+                payment.amount.toLocaleString("en-IN") + " with Razorpay"}
+          </button>
+
+          <div className="relative my-4">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-slate-200" />
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-white px-2 text-slate-400 font-medium">Or Quick Demo</span>
+            </div>
+          </div>
+
+          <button
+            onClick={handleSimulatedPayment}
+            disabled={paying}
+            className="w-full rounded-xl border border-emerald-300 bg-emerald-50/70 px-4 py-2.5 text-xs font-semibold text-emerald-800 hover:bg-emerald-100 disabled:cursor-not-allowed disabled:opacity-60 transition-colors flex items-center justify-center gap-1.5"
+          >
+            <span>⚡ Instant 1-Click Test Recovery (Demo Simulation)</span>
           </button>
 
           <p className="mt-4 text-center text-[11px] leading-5 text-slate-400">
-            Razorpay Test Mode. No real money will be charged.
+            Razorpay Test Mode. Supports both interactive checkout popup and 1-click test recovery.
           </p>
         </div>
       </div>

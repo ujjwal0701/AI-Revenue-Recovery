@@ -204,7 +204,7 @@ async function main() {
           message: `Hi ${customer.name}, we noticed your payment of INR ${amount.toLocaleString(
             "en-IN"
           )} could not be completed (${profile.reason}). Complete it securely here.`,
-          paymentLink: `http://localhost:3000/recover/${payment.id}`,
+          paymentLink: `/recover/${payment.id}`,
           recoveredAmount: isRecovered ? amount : 0,
           attemptedAt: createdAt,
           recoveredAt: isRecovered ? new Date(createdAt.getTime() + 1800000) : null,

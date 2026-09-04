@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/app/lib/prisma";
+import { getOrProvisionPayment } from "@/app/lib/payments";
 
 export async function GET(
   request: Request,
@@ -8,17 +8,7 @@ export async function GET(
   try {
     const { id } = await params;
 
-    const payment = await prisma.payment.findUnique({
-      where: { id },
-      include: {
-        customer: true,
-        recoveryAttempts: {
-          orderBy: {
-            attemptedAt: "desc",
-          },
-        },
-      },
-    });
+    const payment = await getOrProvisionPayment(id);
 
     if (!payment) {
       return NextResponse.json(

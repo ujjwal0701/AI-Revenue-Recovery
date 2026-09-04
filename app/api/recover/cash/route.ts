@@ -48,7 +48,7 @@ export async function POST(request: Request) {
         message: `Payment of INR ${payment.amount.toLocaleString(
           "en-IN"
         )} collected in cash (Ref: ${cashReference}).`,
-        paymentLink: `http://localhost:3000/recover/${payment.id}`,
+        paymentLink: `/recover/${payment.id}`,
       },
     });
 

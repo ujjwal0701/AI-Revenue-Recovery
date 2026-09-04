@@ -161,7 +161,7 @@ export async function ensureSeededDatabase() {
             aiReasoning: `[${profile.prob}% Probability | ${profile.urgency} Urgency] ${profile.aiReason}`,
             aiRecommendation: profile.aiRec,
             message: `Hi ${cust.name}, your payment of INR ${amount.toLocaleString("en-IN")} was declined. Complete it securely here.`,
-            paymentLink: `https://ai-revenue-recovery-lac.vercel.app/recover/${payment.id}`,
+            paymentLink: `/recover/${payment.id}`,
             recoveredAmount: isRecovered ? amount : 0,
             attemptedAt: createdAt,
             recoveredAt: isRecovered ? new Date(createdAt.getTime() + 1800000) : null,

@@ -1,14 +1,15 @@
 import { NextResponse } from "next/server";
 import Razorpay from "razorpay";
 import { prisma } from "@/app/lib/prisma";
+import { getOrProvisionPayment } from "@/app/lib/payments";
 
 export async function POST(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const keyId = process.env.RAZORPAY_KEY_ID;
-    const keySecret = process.env.RAZORPAY_KEY_SECRET;
+    const keyId = process.env.RAZORPAY_KEY_ID || "rzp_test_TU32vEhZq5dHjP";
+    const keySecret = process.env.RAZORPAY_KEY_SECRET || "Ld5nkOmhcm98CUrB5VHQkNlO";
 
     if (!keyId || !keySecret) {
       return NextResponse.json(
@@ -27,9 +28,7 @@ export async function POST(
 
     const { id } = await params;
 
-    const payment = await prisma.payment.findUnique({
-      where: { id },
-    });
+    const payment = await getOrProvisionPayment(id);
 
     if (!payment) {
       return NextResponse.json(

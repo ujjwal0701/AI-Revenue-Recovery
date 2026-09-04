@@ -426,7 +426,7 @@ export default function Home() {
           amount: 4999,
           currency: "INR",
           failureReason: "Card declined by issuing bank",
-          paymentLink: "http://localhost:3000/recover/demo",
+          paymentLink: "/recover/demo",
           razorpayPaymentId: "pay_test_verified99",
         }),
       });
@@ -457,7 +457,7 @@ export default function Home() {
           amount: type === "PAYMENT_FAILED" ? 8999 : 5499,
           currency: "INR",
           failureReason: "Card declined by issuing bank (3DS timeout)",
-          paymentLink: "http://localhost:3000/recover/demo-sample",
+          paymentLink: "/recover/demo-sample",
           razorpayPaymentId: "pay_test_sample_" + Math.random().toString(36).substring(2, 7),
         }),
       });
@@ -1766,7 +1766,11 @@ export default function Home() {
 
                           {selectedSandboxEmail.paymentLink && (
                             <a
-                              href={selectedSandboxEmail.paymentLink}
+                              href={
+                                selectedSandboxEmail.paymentLink.startsWith("http://localhost:3000/")
+                                  ? selectedSandboxEmail.paymentLink.replace("http://localhost:3000", "")
+                                  : selectedSandboxEmail.paymentLink
+                              }
                               target="_blank"
                               rel="noopener noreferrer"
                               className="rounded-lg bg-slate-950 px-3 py-1 font-semibold text-white hover:bg-slate-800 text-xs inline-flex items-center gap-1.5"
@@ -1782,7 +1786,13 @@ export default function Home() {
                             <div className="rounded-xl border border-slate-200 bg-white shadow-inner h-full">
                               <iframe
                                 title="Visual Sandbox Email"
-                                srcDoc={selectedSandboxEmail.html}
+                                srcDoc={
+                                  selectedSandboxEmail.html
+                                    ? selectedSandboxEmail.html
+                                        .replaceAll("http://localhost:3000/recover/", "/recover/")
+                                        .replaceAll("http://localhost:3000", "/")
+                                    : ""
+                                }
                                 className="w-full h-full min-h-[360px] border-0 rounded-xl"
                               />
                             </div>
@@ -2373,7 +2383,7 @@ export default function Home() {
                             previewNotification.payment.currency || "INR",
                           failureReason:
                             previewNotification.payment.failureReason,
-                          paymentLink: `http://localhost:3000/recover/${previewNotification.payment.id}`,
+                          paymentLink: `/recover/${previewNotification.payment.id}`,
                           customMessage: previewNotification.attempt?.message,
                         })
                     }
@@ -2420,7 +2430,7 @@ export default function Home() {
                           previewNotification.payment.currency || "INR",
                         failureReason:
                           previewNotification.payment.failureReason,
-                        paymentLink: `http://localhost:3000/recover/${previewNotification.payment.id}`,
+                        paymentLink: `/recover/${previewNotification.payment.id}`,
                       })}
                   </div>
                   <div className="mt-2 text-right text-[10px] text-slate-400">
@@ -2463,7 +2473,7 @@ export default function Home() {
                           previewNotification.payment.currency || "INR",
                         failureReason:
                           previewNotification.payment.failureReason,
-                        paymentLink: `http://localhost:3000/recover/${previewNotification.payment.id}`,
+                        paymentLink: `/recover/${previewNotification.payment.id}`,
                       })}
                   </div>
                   <div className="mt-2 text-right text-[10px] text-slate-500 font-medium">

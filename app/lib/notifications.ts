@@ -86,13 +86,13 @@ function initSandboxStore(): SandboxEmail[] {
           amount: 9999,
           currency: "INR",
           failureReason: "Card declined by issuing bank (3DS timeout)",
-          paymentLink: "http://localhost:3000/recover/demo-1",
+          paymentLink: "/recover/demo-1",
         }),
-        text: "Hi Aarav Patel, we were unable to process your payment of INR 9,999 due to bank timeout. Retry securely here: http://localhost:3000/recover/demo-1",
+        text: "Hi Aarav Patel, we were unable to process your payment of INR 9,999 due to bank timeout. Retry securely here: /recover/demo-1",
         amount: 9999,
         currency: "INR",
         paymentId: "demo-1",
-        paymentLink: "http://localhost:3000/recover/demo-1",
+        paymentLink: "/recover/demo-1",
         status: "250 2.0.0 OK (Delivered)",
         latencyMs: 118,
         spf: "PASS (domain: revenueai.dev)",
@@ -165,11 +165,22 @@ export function clearSandboxEmails(): void {
  * @param payload Notification parameters including recipient, amount, currency, and recovery link
  * @returns Fully formatted, cross-client compatible HTML string
  */
+export function normalizePaymentLink(link?: string | null): string {
+  if (!link) return "/recover/demo-1";
+  if (link.startsWith("http://localhost:3000/")) {
+    return link.replace("http://localhost:3000", "");
+  }
+  if (link === "http://localhost:3000") {
+    return "/";
+  }
+  return link;
+}
+
 export function generatePaymentFailedEmailHtml(payload: NotificationPayload): string {
   const { recipientName, amount, currency, failureReason, paymentLink, customMessage } = payload;
 
   const formattedAmount = `${currency} ${amount.toLocaleString("en-IN")}`;
-  const link = paymentLink || "http://localhost:3000";
+  const link = normalizePaymentLink(paymentLink);
 
   return `
 <!DOCTYPE html>
@@ -254,7 +265,7 @@ export function generatePaymentFailedEmailHtml(payload: NotificationPayload): st
  */
 export function generatePaymentFailedSmsText(payload: NotificationPayload): string {
   const { recipientName, amount, currency, failureReason, paymentLink } = payload;
-  const link = paymentLink || "http://localhost:3000";
+  const link = normalizePaymentLink(paymentLink);
   return `RevenueAI Alert: Hi ${recipientName}, your payment of ${currency} ${amount.toLocaleString(
     "en-IN"
   )} was declined (${failureReason || "Bank timeout"}). Retry in 1-click: ${link}`;
@@ -265,7 +276,7 @@ export function generatePaymentFailedSmsText(payload: NotificationPayload): stri
  */
 export function generatePaymentFailedWhatsAppText(payload: NotificationPayload): string {
   const { recipientName, amount, currency, failureReason, paymentLink } = payload;
-  const link = paymentLink || "http://localhost:3000";
+  const link = normalizePaymentLink(paymentLink);
   return `⚠️ *Payment Action Required - RevenueAI*
 
 Hi *${recipientName}*,
@@ -380,7 +391,7 @@ export function generatePaymentSuccessEmailHtml(payload: NotificationPayload): s
       </div>
 
       <div class="btn-container">
-        <a href="http://localhost:3000" class="btn" target="_blank">Return to Workspace &rarr;</a>
+        <a href="/" class="btn" target="_blank">Return to Workspace &rarr;</a>
       </div>
 
       <p style="font-size: 12px; color: #94a3b8; text-align: center; margin: 0;">
@@ -566,7 +577,7 @@ export async function sendRecoveryNotification(
     channel: "PAYMENT_LINK",
     recipient: payload.recipientEmail,
     status: "DELIVERED",
-    content: `Payment recovery link created: ${payload.paymentLink || "http://localhost:3000"}`,
+    content: `Payment recovery link created: ${normalizePaymentLink(payload.paymentLink)}`,
     timestamp,
     provider: "SIMULATED_DISPATCH",
   };

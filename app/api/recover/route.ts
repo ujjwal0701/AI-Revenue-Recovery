@@ -77,7 +77,7 @@ export async function POST(request: Request) {
       },
     });
 
-    const demoPaymentLink = `http://localhost:3000/recover/${payment.id}`;
+    const demoPaymentLink = `/recover/${payment.id}`;
 
     // Map AI recommended action to Prisma RecoveryChannel
     let channel: "PAYMENT_LINK" | "EMAIL" | "SMS" | "WHATSAPP" = "PAYMENT_LINK";
