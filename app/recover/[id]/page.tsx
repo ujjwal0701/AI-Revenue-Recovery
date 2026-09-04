@@ -1,8 +1,19 @@
 "use client";
 
+/**
+ * -----------------------------------------------------------------------------
+ * Customer Payment Recovery Checkout View
+ * 
+ * Provides an isolated, responsive checkout experience for customers who receive
+ * an automated recovery notification. Dynamically mounts the Razorpay Standard
+ * Checkout modal, verifies transaction authorization, and displays confirmation.
+ * -----------------------------------------------------------------------------
+ */
+
 import { useEffect, useState } from "react";
 
 type RecoveryAttempt = {
+
   id: string;
   aiReasoning: string | null;
   aiRecommendation: string | null;
