@@ -150,10 +150,15 @@ export function clearSandboxEmails(): void {
  */
 
 /**
- * Builds responsive HTML template for Payment Failure / Recovery emails
+ * Generates an email-client compliant, responsive transactional HTML email
+ * notifying the customer of a payment failure with a secure one-click Razorpay retry button.
+ *
+ * @param payload Notification parameters including recipient, amount, currency, and recovery link
+ * @returns Fully formatted, cross-client compatible HTML string
  */
 export function generatePaymentFailedEmailHtml(payload: NotificationPayload): string {
   const { recipientName, amount, currency, failureReason, paymentLink, customMessage } = payload;
+
   const formattedAmount = `${currency} ${amount.toLocaleString("en-IN")}`;
   const link = paymentLink || "http://localhost:3000";
 
