@@ -9,6 +9,7 @@ export type RecoveryAction =
   | "NO_ACTION"
   | "MANUAL_REVIEW";
 
+
 export type RecoveryUrgency = "LOW" | "MEDIUM" | "HIGH";
 
 export interface PaymentRecoveryContext {
@@ -122,9 +123,8 @@ export function getDeterministicRecoveryFallback(
 
   const message = `Hi ${customer.name}, we noticed your payment of ${context.currency} ${amount.toLocaleString(
     "en-IN"
-  )} could not be completed (${
-    failureReason || "Authentication or gateway issue"
-  }). You can securely complete your transaction with one click.`;
+  )} could not be completed (${failureReason || "Authentication or gateway issue"
+    }). You can securely complete your transaction with one click.`;
 
   return {
     recoveryProbability: Math.min(100, Math.max(0, Math.round(probability))),
@@ -237,8 +237,8 @@ Return STRICT JSON only matching this format:
       typeof parsed.message === "string" && parsed.message.trim().length > 0
         ? parsed.message.trim()
         : `Hi ${context.customer.name}, your payment of ${context.currency} ${context.amount.toLocaleString(
-            "en-IN"
-          )} could not be completed. You can securely retry using this recovery link.`;
+          "en-IN"
+        )} could not be completed. You can securely retry using this recovery link.`;
 
     return {
       recoveryProbability,

@@ -252,17 +252,36 @@ export default function RecoveryPage({
     return (
       <main className="flex min-h-screen items-center justify-center bg-slate-50 p-6">
         <div className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-8 text-center shadow-sm">
-          <button onClick={() => (window.location.href = '/')} className='mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-emerald-50 text-emerald-600 hover:bg-emerald-100'>OK</button>
+          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-emerald-50 text-emerald-600 text-2xl font-bold">
+            ✓
+          </div>
 
           <h1 className="mt-5 text-2xl font-semibold text-slate-950">
-            Payment successful
+            Payment Successful!
           </h1>
 
           <p className="mt-2 text-sm leading-6 text-slate-500">
-            Your payment of INR{" "}
-            {payment.amount.toLocaleString("en-IN")}{" "}
-            has been successfully recovered.
+            Your payment of <strong className="text-slate-900">INR {payment.amount.toLocaleString("en-IN")}</strong> has been successfully recovered and captured.
           </p>
+
+          <div className="mt-5 rounded-xl border border-emerald-100 bg-emerald-50/60 p-3.5 text-left text-xs space-y-1.5">
+            <div className="flex items-center gap-2 text-emerald-900 font-semibold">
+              <span>📩 Notifications Dispatched:</span>
+            </div>
+            <p className="text-emerald-700">
+              • <strong>Receipt Email</strong> sent to <span className="font-mono">{payment.customer.email}</span>
+            </p>
+            <p className="text-emerald-700">
+              • <strong>Confirmation SMS</strong> sent to customer phone
+            </p>
+          </div>
+
+          <button
+            onClick={() => (window.location.href = "/")}
+            className="mt-6 w-full rounded-xl bg-slate-950 px-4 py-3 text-sm font-semibold text-white hover:bg-slate-800"
+          >
+            Return to Dashboard &rarr;
+          </button>
         </div>
       </main>
     );

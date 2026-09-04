@@ -1,8 +1,11 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/app/lib/prisma";
+import { ensureSeededDatabase } from "@/app/lib/seedHelper";
 
 export async function GET() {
   try {
+    await ensureSeededDatabase();
+
     const payments = await prisma.payment.findMany({
       include: {
         customer: true,

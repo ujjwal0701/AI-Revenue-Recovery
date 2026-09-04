@@ -1,6 +1,7 @@
 import crypto from "crypto";
 import { NextResponse } from "next/server";
 import { prisma } from "@/app/lib/prisma";
+import { sendMultiChannelNotification } from "@/app/lib/notifications";
 
 export async function POST(request: Request) {
   try {
@@ -28,6 +29,9 @@ export async function POST(request: Request) {
 
     const payment = await prisma.payment.findUnique({
       where: { id: paymentId },
+      include: {
+        customer: true,
+      },
     });
 
     if (!payment) {
@@ -88,6 +92,8 @@ export async function POST(request: Request) {
       );
     }
 
+    const now = new Date();
+
     const updatedAttempt = await prisma.recoveryAttempt.update({
       where: {
         id: recoveryAttempt.id,
@@ -95,7 +101,7 @@ export async function POST(request: Request) {
       data: {
         status: "RECOVERED",
         recoveredAmount: payment.amount,
-        recoveredAt: new Date(),
+        recoveredAt: now,
       },
     });
 
@@ -123,10 +129,28 @@ export async function POST(request: Request) {
       },
     });
 
+    // Dispatch automated Payment Success / Receipt notifications to BOTH Email and SMS
+    const successNotification = await sendMultiChannelNotification(
+      {
+        recipientName: payment.customer.name,
+        recipientEmail: payment.customer.email,
+        recipientPhone: payment.customer.phone,
+        amount: payment.amount,
+        currency: payment.currency,
+        paymentId: payment.id,
+        razorpayPaymentId,
+        razorpayOrderId,
+        paidAt: now,
+      },
+      "PAYMENT_SUCCESS"
+    );
+
     return NextResponse.json({
       success: true,
-      message: "Payment recovered successfully",
+      message: "Payment recovered successfully & receipt sent to Email and SMS",
       recoveryAttempt: updatedAttempt,
+      successNotification: successNotification.emailResult,
+      multiChannelResult: successNotification,
     });
   } catch (error) {
     console.error("Recovery completion error:", error);

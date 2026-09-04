@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/app/lib/prisma";
 import { analyzePaymentRecovery } from "@/app/lib/gemini";
+import { sendMultiChannelNotification } from "@/app/lib/notifications";
 
 export async function POST(request: Request) {
   try {
@@ -98,11 +99,25 @@ export async function POST(request: Request) {
       },
     });
 
+    // Dispatch automated Email and SMS/WhatsApp notifications simultaneously to customer
+    const multiChannelResult = await sendMultiChannelNotification({
+      recipientName: payment.customer.name,
+      recipientEmail: payment.customer.email,
+      recipientPhone: payment.customer.phone,
+      amount: payment.amount,
+      currency: payment.currency,
+      failureReason: payment.failureReason,
+      paymentLink: demoPaymentLink,
+      customMessage: aiStrategy.message,
+    }, "PAYMENT_FAILED");
+
     return NextResponse.json({
       success: true,
-      message: "Recovery link created",
+      message: "Recovery link created & notifications dispatched to Email and SMS",
       recoveryAttempt,
       aiStrategy,
+      notificationResult: multiChannelResult.emailResult,
+      multiChannelResult,
     });
   } catch (error) {
     console.error("Recovery API error:", error);
