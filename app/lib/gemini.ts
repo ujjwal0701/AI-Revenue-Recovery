@@ -1,5 +1,15 @@
+/**
+ * Gemini AI Payment Recovery Engine
+ * 
+ * Analyzes transaction failure signals, customer lifetime value (LTV),
+ * and historical recovery success rates to prescribe optimal multi-channel actions.
+ * Seamlessly fails over to deterministic heuristics if AI credentials are absent.
+ */
 import { GoogleGenAI } from "@google/genai";
 
+/**
+ * Recommended automated recovery action type
+ */
 export type RecoveryAction =
   | "PAYMENT_LINK"
   | "RETRY_LATER"
@@ -9,8 +19,11 @@ export type RecoveryAction =
   | "NO_ACTION"
   | "MANUAL_REVIEW";
 
-
+/**
+ * Recovery urgency classification
+ */
 export type RecoveryUrgency = "LOW" | "MEDIUM" | "HIGH";
+
 
 export interface PaymentRecoveryContext {
   paymentId: string;
