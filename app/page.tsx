@@ -1,6 +1,25 @@
 "use client";
+
+/**
+ * -----------------------------------------------------------------------------
+ * RevenueAI Enterprise Recovery Dashboard
+ * 
+ * Central operations center providing real-time visibility into failed payment
+ * transactions, AI-assisted recovery actions, transactional email sandbox auditing,
+ * and field/counter cash reconciliation.
+ * 
+ * Tabs:
+ * - Overview: High-level KPI metrics, AI recovery activity, and recent failures
+ * - Payments: Filterable table of all transactions with manual link generators
+ * - Customers: Customer profile directory with lifetime spending analytics
+ * - AI Agent & Notifications: Configuration desk for automated decision engine
+ * - Email Sandbox: Simulated mailbox for inspecting outbound HTML notifications
+ * -----------------------------------------------------------------------------
+ */
+
 import { useEffect, useState } from "react";
 import {
+
   generatePaymentFailedEmailHtml,
   generatePaymentSuccessEmailHtml,
   generatePaymentFailedSmsText,
